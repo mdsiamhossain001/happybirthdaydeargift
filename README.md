@@ -1,22 +1,27 @@
-# Birthday Gift Website
+# 🎁 Happy Birthday Gift Website
 
-A mobile-first birthday gift website with an animated book, star field, fireworks, floating hearts, optional Matrix effect API, music file selection, personal message, image/GIF URL, theme choices, language toggle, countdown and share button.
+Website thiệp sinh nhật với hiệu ứng mưa chữ, sách lật 3D, nhạc nền và trái tim bay.
 
-## Files
-- `index.html` — page structure
-- `css/index.css` — all styling and animations
-- `js/lang.js` — English/Bangla text toggle
-- `js/effects.js` — stars, fireworks, hearts and Matrix effect
-- `js/settings.js` — personal settings and local browser storage
-- `js/main.js` — book navigation, music, countdown and share interactions
+## 🚀 Deploy Vercel
 
-## Run
-Open `index.html` in a modern browser, or upload the files preserving the folder structure to GitHub Pages or Vercel.
+1. Push code lên GitHub
+2. Import vào [Vercel](https://vercel.com)
+3. Deploy - không cần config gì thêm
 
-## Important notes
-- Settings are saved in the current browser using localStorage; they are not synced across devices.
-- Choose a local audio file in Settings to use background music. Browsers may require a user tap before audio starts.
-- The Matrix effect is available to call from JavaScript with `BirthdayEffects.matrix(true)`; call `BirthdayEffects.matrix(false)` to turn it off.
-- Fullscreen is triggered by double-clicking/tapping the brand on supported browsers.
-- This standalone project does not include Firebase Google Sign-In, server-backed order history, or payments. Those require valid Firebase/backend configuration and must not be represented as working without it.
-- Google Fonts is optional; if unavailable, local system fonts are used.
+## 📝 Tùy chỉnh
+
+Mở `index.html`, tìm phần `CONFIG` ở đầu `<script>`:
+
+```js
+const CONFIG = {
+  texts: ['HAPPY', 'BIRTHDAY', 'MY', 'CUTEE', 'LITTLE', 'SWARALI', '❤'],
+  countdown: 5,
+  matrixText: 'HAPPYBIRTHDAY',
+  matrixColor1: '#ff69b4',
+  matrixColor2: '#ff1493',
+  giftImage: '',
+  enableBook: true,
+  enableHeart: true,
+  musicSrc: './music/happybirthday.mp3',
+  bookPages: [...]
+};

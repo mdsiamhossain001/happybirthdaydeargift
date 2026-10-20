@@ -1,147 +1,480 @@
-<div class="overlay">
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Món Quà Đặc Biệt Cho Bạn 🎁</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
 
-  <!-- ⏱️ COUNTDOWN -->
-  <div class="countdown-wrapper" id="countdownWrapper">
-    <div class="countdown-ring"></div>
-    <div class="countdown-border"></div>
-    <div class="countdown-number" id="countdownNumber">5</div>
-    <div class="countdown-label" data-i18n="gettingReady">Đang chuẩn bị...</div>
-  </div>
+<style>
+/* ============ RESET ============ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <!-- ✍️ CONTENT TEXT -->
-  <div class="content-display" id="contentDisplay">
-    <div class="words-container" id="wordsContainer"></div>
-  </div>
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden; background: #000;
+  font-family: 'Arial', sans-serif;
+}
 
-  <!-- BOOK -->
-  <div class="book-container" id="bookContainer">
-    <div class="book" id="book"></div>
-  </div>
+body {
+  background: radial-gradient(ellipse at center, #1a0525 0%, #000 100%);
+}
 
-  <!-- GIFT IMAGE -->
-  <div id="gift-image-container"></div>
+/* ============ MATRIX CANVAS ============ */
+#matrix-rain {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1; pointer-events: none;
+  display: none;
+}
 
-  <!-- BUTTONS -->
-  <button class="music-control" id="musicControl" title="Play/Pause">▶</button>
-  <button class="settings-button" id="settingsButton" title="Settings">⚙</button>
-  <button id="langSwitchBtn" class="lang-switch">EN/VI</button>
+/* ============ COUNTDOWN TIMER ============ */
+.countdown-wrapper {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.countdown-wrapper.show {
+  display: flex;
+  animation: countdownFadeIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.countdown-wrapper.hide {
+  animation: countdownFadeOut 0.5s ease forwards;
+}
+@keyframes countdownFadeIn {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+  60% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes countdownFadeOut {
+  to { opacity: 0; transform: translate(-50%, -50%) scale(1.8); filter: blur(20px); }
+}
 
-  <!-- SETTINGS MODAL (giữ nguyên như cũ) -->
-  <div id="settingsModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 data-i18n="settings">⚙️ Cài Đặt</h2>
-        <span class="close" id="closeSettings">&times;</span>
+.countdown-ring {
+  position: absolute;
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #ff69b4, #ff1493, #ffa500, #ff69b4);
+  opacity: 0.25; filter: blur(30px);
+  animation: ringRotate 4s linear infinite, ringPulse 2s ease-in-out infinite;
+  z-index: -1;
+}
+@keyframes ringRotate { to { transform: rotate(360deg); } }
+@keyframes ringPulse {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.15); }
+}
+
+.countdown-border {
+  position: absolute;
+  width: 260px; height: 260px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  background: linear-gradient(#000, #000) padding-box,
+              linear-gradient(135deg, #ff69b4, #ff1493, #ffa500) border-box;
+  box-shadow: 0 0 40px rgba(255, 105, 180, 0.6);
+  z-index: -1;
+}
+
+.countdown-number {
+  font-family: 'Pacifico', cursive;
+  font-size: clamp(120px, 25vw, 200px);
+  line-height: 1;
+  background: linear-gradient(135deg, #fff 0%, #ffb6c1 25%, #ff69b4 50%, #ff1493 75%, #fff 100%);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 30px rgba(255, 105, 180, 0.8));
+  animation: gradientShift 3s ease infinite, numberPulse 1s ease-in-out infinite;
+  text-align: center;
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes numberPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.countdown-label {
+  margin-top: 20px;
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(18px, 4vw, 28px);
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+}
+
+/* ============ CONTENT TEXT ============ */
+.content-display {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw; max-width: 900px;
+  z-index: 50;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+.content-display.show { display: flex; }
+
+.words-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+.word-reveal {
+  display: inline-block;
+  font-family: 'Pacifico', cursive;
+  font-size: clamp(48px, 12vw, 120px);
+  line-height: 1.1;
+  background: linear-gradient(135deg, #fff 0%, #ffb6c1 20%, #ff69b4 40%, #ff1493 60%, #ffd700 80%, #fff 100%);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.8));
+  animation: wordFloatIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, gradientMove 4s ease infinite;
+  opacity: 0;
+  transform: translateY(40px) scale(0.7);
+  letter-spacing: 2px;
+}
+@keyframes wordFloatIn {
+  0% { opacity: 0; transform: translateY(40px) scale(0.7) rotate(-5deg); filter: blur(10px); }
+  60% { opacity: 1; transform: translateY(-10px) scale(1.1) rotate(2deg); filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); filter: blur(0); }
+}
+@keyframes gradientMove {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ============ GIFT IMAGE ============ */
+#gift-image {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000; max-width: 80%; max-height: 80%;
+  filter: drop-shadow(0 0 30px rgba(255, 105, 180, 0.8));
+}
+
+/* ============ HEART ============ */
+.heart {
+  position: fixed; z-index: 1000;
+  pointer-events: none; color: #ff6b6b;
+  font-size: 20px;
+  animation: float-heart 4s ease-in-out forwards;
+}
+@keyframes float-heart {
+  0% { transform: translateY(0) scale(0); opacity: 0; }
+  10% { transform: translateY(-20px) scale(1); opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-700px) scale(0); opacity: 0; }
+}
+
+/* ============ BOOK ============ */
+.book-container {
+  perspective: 2000px;
+  position: fixed;
+  top: 55%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  display: none; opacity: 0;
+  transition: all 1s ease;
+  z-index: 60;
+}
+.book-container.show {
+  display: block; opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.book {
+  width: 600px; height: 400px;
+  position: relative; transform-style: preserve-3d;
+  cursor: grab; user-select: none;
+  display: none;
+}
+.book.show { display: block; }
+.page {
+  width: 300px; height: 400px;
+  position: absolute; top: 0; right: 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8), 0 10px 20px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: var(--page-z-index, 1);
+}
+.page.flipped { transform: rotateY(-180deg); z-index: var(--page-flipped-z-index, 1); }
+.page-front, .page-back {
+  position: absolute; width: 100%; height: 100%;
+  backface-visibility: hidden; overflow: hidden;
+  border: 2px solid #ddd;
+}
+.page-front { background: white; z-index: 2; border-radius: 0 8px 8px 0; }
+.page-back { background: white; transform: rotateY(180deg); border-radius: 8px 0 0 8px; }
+.page-front img, .page-back img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ============ BUTTONS ============ */
+.music-control, .settings-button, .lang-switch {
+  position: fixed; top: 20px;
+  z-index: 10001; cursor: pointer;
+  outline: none; border: none;
+  transition: all 0.3s ease;
+}
+.music-control {
+  right: 20px; width: 44px; height: 44px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; color: #fff;
+}
+.settings-button {
+  right: 80px; width: 44px; height: 44px;
+  background: linear-gradient(135deg, #b20404, #2a1717);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; color: #fff;
+}
+.lang-switch {
+  right: 140px; padding: 8px 16px;
+  border-radius: 8px; background: rgba(255, 255, 255, 0.9);
+  color: #222; font-size: 13px; font-weight: 600;
+}
+
+/* ============ MODAL ============ */
+.modal {
+  display: none; position: fixed;
+  z-index: 10002; inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  overflow: auto;
+}
+.modal-content {
+  background: #fff; margin: 3vh auto; padding: 0;
+  width: 90%; max-width: 600px; height: 85vh;
+  border-radius: 16px;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.modal-header {
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
+  padding: 15px 20px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.modal-header h2 { margin: 0; color: white; font-size: 20px; }
+.close { color: white; font-size: 28px; cursor: pointer; font-weight: bold; line-height: 1; }
+.modal-body { flex: 1; padding: 20px; overflow-y: auto; background: #f9f9f9; }
+
+.settings-section {
+  margin-bottom: 20px; padding: 15px;
+  background: white; border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.settings-section h3 {
+  margin: 0 0 15px; font-size: 16px; color: #333;
+  border-bottom: 2px solid #ffe0ec; padding-bottom: 8px;
+}
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #444; font-size: 14px; }
+.modal-content select, .modal-content input[type="text"], .modal-content input[type="file"], .modal-content input[type="color"] {
+  width: 100%; padding: 10px; margin-bottom: 10px;
+  border: 1px solid #ddd; border-radius: 6px; font-size: 14px;
+}
+.form-row { display: flex; gap: 15px; }
+.form-row .form-group { flex: 1; }
+.apply-settings-btn {
+  width: 100%; padding: 14px; font-size: 16px; font-weight: 700;
+  background: linear-gradient(135deg, #ff6b9d, #ff9270);
+  color: white; border: none; border-radius: 10px; cursor: pointer;
+}
+
+/* ============ COLOR THEME ============ */
+.color-theme-buttons { display: flex; gap: 8px; margin-top: 10px; }
+.color-theme-btn {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 10px 8px; border: 2px solid #e0e0e0;
+  border-radius: 8px; background: white; cursor: pointer; flex: 1;
+}
+.color-theme-btn.active { border-color: #ff6b6b; background: #fff5f5; }
+.color-preview { width: 25px; height: 25px; border-radius: 50%; margin-bottom: 8px; border: 2px solid #fff; }
+.pink-preview { background: linear-gradient(135deg, #ff69b4, #ff1493); }
+.blue-preview { background: linear-gradient(135deg, #87ceeb, #4169e1); }
+.purple-preview { background: linear-gradient(135deg, #dda0dd, #9370db); }
+.custom-preview { background: linear-gradient(135deg, #ffb6c1, #ffc0cb); }
+.color-theme-btn span { font-size: 11px; font-weight: 500; color: #333; }
+
+/* ============ COPYRIGHT ============ */
+.copyright {
+  position: fixed; bottom: 10px; right: 15px;
+  font-size: 12px; color: rgba(255, 255, 255, 0.4);
+  z-index: 5000; pointer-events: none;
+}
+.copyright a { color: rgba(255, 255, 255, 0.6); }
+
+/* ============ RESPONSIVE ============ */
+@media screen and (max-width: 768px) {
+  .countdown-ring { width: 260px; height: 260px; }
+  .countdown-border { width: 210px; height: 210px; }
+  .countdown-number { font-size: clamp(90px, 30vw, 160px); }
+  .word-reveal { font-size: clamp(40px, 13vw, 90px); }
+  .book { width: 90vw; height: 60vw; max-height: 340px; }
+  .page { width: 50%; height: 100%; }
+  .lang-switch { right: 135px; padding: 6px 10px; font-size: 11px; }
+  .settings-button { right: 75px; width: 40px; height: 40px; font-size: 20px; }
+  .music-control { width: 40px; height: 40px; }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="matrix-rain"></canvas>
+
+<!-- Countdown -->
+<div class="countdown-wrapper" id="countdownWrapper">
+  <div class="countdown-ring"></div>
+  <div class="countdown-border"></div>
+  <div class="countdown-number" id="countdownNumber">5</div>
+  <div class="countdown-label" data-i18n="gettingReady">Đang chuẩn bị...</div>
+</div>
+
+<!-- Text -->
+<div class="content-display" id="contentDisplay">
+  <div class="words-container" id="wordsContainer"></div>
+</div>
+
+<!-- Book -->
+<div class="book-container" id="bookContainer">
+  <div class="book" id="book"></div>
+</div>
+
+<!-- Gift Image -->
+<div id="gift-image-container"></div>
+
+<!-- Buttons -->
+<button class="music-control" id="musicControl">▶</button>
+<button class="settings-button" id="settingsButton">⚙</button>
+<button class="lang-switch" id="langSwitchBtn">EN/VI</button>
+
+<!-- SETTINGS MODAL -->
+<div id="settingsModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 data-i18n="settings">⚙️ Cài Đặt</h2>
+      <span class="close" id="closeSettings">&times;</span>
+    </div>
+    <div class="modal-body">
+
+      <div class="settings-section">
+        <h3 data-i18n="music">🎵 Âm Thanh</h3>
+        <div class="form-group">
+          <label for="musicFile" data-i18n="musicFile">Chọn nhạc (MP3):</label>
+          <input type="file" id="musicFile" accept="audio/*">
+          <small style="color:#888;font-size:12px;" data-i18n="musicHint">Hoặc để trống dùng nhạc mặc định</small>
+        </div>
       </div>
-      <div class="modal-body">
 
-        <div class="settings-section">
-          <h3 data-i18n="music">🎵 Âm Thanh</h3>
-          <div class="form-group">
-            <label for="musicFile" data-i18n="musicFile">Chọn nhạc (MP3):</label>
-            <input type="file" id="musicFile" accept="audio/*">
-            <small style="color:#888;font-size:12px;" data-i18n="musicHint">Hoặc để trống dùng nhạc mặc định</small>
-          </div>
+      <div class="settings-section">
+        <h3 data-i18n="countdown">⏰ Đếm Ngược</h3>
+        <div class="form-group">
+          <label for="countdownTime" data-i18n="countdownTime">Thời gian:</label>
+          <select id="countdownTime">
+            <option value="3" data-i18n="sec3">3 giây</option>
+            <option value="5" selected data-i18n="sec5">5 giây</option>
+            <option value="10" data-i18n="sec10">10 giây</option>
+          </select>
         </div>
-
-        <div class="settings-section">
-          <h3 data-i18n="countdown">⏰ Đếm Ngược</h3>
-          <div class="form-group">
-            <label for="countdownTime" data-i18n="countdownTime">Thời gian:</label>
-            <select id="countdownTime">
-              <option value="3" data-i18n="sec3">3 giây</option>
-              <option value="5" selected data-i18n="sec5">5 giây</option>
-              <option value="10" data-i18n="sec10">10 giây</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="settings-section">
-          <h3 data-i18n="matrix">🌧️ Mưa Chữ</h3>
-          <div class="form-group">
-            <label for="matrixText" data-i18n="matrixText">Chữ mưa:</label>
-            <input type="text" id="matrixText" value="HAPPYBIRTHDAY">
-          </div>
-          <div class="form-group">
-            <label data-i18n="colorTheme">Màu:</label>
-            <div class="color-theme-buttons">
-              <button type="button" class="color-theme-btn active" data-theme="pink">
-                <div class="color-preview pink-preview"></div>
-                <span data-i18n="pinkTheme">Hồng</span>
-              </button>
-              <button type="button" class="color-theme-btn" data-theme="blue">
-                <div class="color-preview blue-preview"></div>
-                <span data-i18n="blueTheme">Xanh</span>
-              </button>
-              <button type="button" class="color-theme-btn" data-theme="purple">
-                <div class="color-preview purple-preview"></div>
-                <span data-i18n="purpleTheme">Tím</span>
-              </button>
-              <button type="button" class="color-theme-btn" data-theme="custom">
-                <div class="color-preview custom-preview"></div>
-                <span data-i18n="customTheme">Tùy chỉnh</span>
-              </button>
-            </div>
-          </div>
-          <div class="form-row" id="customColorSection" style="display:none;">
-            <div class="form-group">
-              <label data-i18n="matrixColor1">Màu 1:</label>
-              <input type="color" id="matrixColor1" value="#ff69b4">
-            </div>
-            <div class="form-group">
-              <label data-i18n="matrixColor2">Màu 2:</label>
-              <input type="color" id="matrixColor2" value="#ff1493">
-            </div>
-          </div>
-        </div>
-
-        <div class="settings-section">
-          <h3 data-i18n="sequence">✨ Chữ Chính</h3>
-          <div class="form-group">
-            <label for="sequenceText" data-i18n="sequenceText">Nội dung (cách bằng |):</label>
-            <input type="text" id="sequenceText" value="HAPPY|BIRTHDAY|MY|CUTEE|LITTLE|SWARALI|❤">
-          </div>
-        </div>
-
-        <div class="settings-section">
-          <h3 data-i18n="gift">🎁 Hình Động</h3>
-          <div class="form-group">
-            <label for="giftImage" data-i18n="giftImage">Chọn GIF:</label>
-            <select id="giftImage">
-              <option value="" data-i18n="noGif">Không có</option>
-              <option value="./happy.gif">happy.gif</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="settings-section">
-          <h3 data-i18n="book">📖 Trang Sách</h3>
-          <div class="form-group">
-            <label for="enableBook" data-i18n="enableBook">Hiển thị sách:</label>
-            <select id="enableBook">
-              <option value="true" data-i18n="on">Bật</option>
-              <option value="false" data-i18n="off">Tắt</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="enableHeart" data-i18n="enableHeart">Hiệu ứng trái tim:</label>
-            <select id="enableHeart">
-              <option value="true" data-i18n="on">Bật</option>
-              <option value="false" data-i18n="off">Tắt</option>
-            </select>
-          </div>
-        </div>
-
-        <button id="applySettings" class="apply-settings-btn" data-i18n="apply">🎉 Áp Dụng</button>
       </div>
+
+      <div class="settings-section">
+        <h3 data-i18n="matrix">🌧️ Mưa Chữ</h3>
+        <div class="form-group">
+          <label for="matrixText" data-i18n="matrixText">Chữ mưa:</label>
+          <input type="text" id="matrixText" value="HAPPYBIRTHDAY">
+        </div>
+        <div class="form-group">
+          <label data-i18n="colorTheme">Màu:</label>
+          <div class="color-theme-buttons">
+            <button type="button" class="color-theme-btn active" data-theme="pink">
+              <div class="color-preview pink-preview"></div><span data-i18n="pinkTheme">Hồng</span>
+            </button>
+            <button type="button" class="color-theme-btn" data-theme="blue">
+              <div class="color-preview blue-preview"></div><span data-i18n="blueTheme">Xanh</span>
+            </button>
+            <button type="button" class="color-theme-btn" data-theme="purple">
+              <div class="color-preview purple-preview"></div><span data-i18n="purpleTheme">Tím</span>
+            </button>
+            <button type="button" class="color-theme-btn" data-theme="custom">
+              <div class="color-preview custom-preview"></div><span data-i18n="customTheme">Tùy chỉnh</span>
+            </button>
+          </div>
+        </div>
+        <div class="form-row" id="customColorSection" style="display:none;">
+          <div class="form-group"><label data-i18n="matrixColor1">Màu 1:</label><input type="color" id="matrixColor1" value="#ff69b4"></div>
+          <div class="form-group"><label data-i18n="matrixColor2">Màu 2:</label><input type="color" id="matrixColor2" value="#ff1493"></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3 data-i18n="sequence">✨ Chữ Chính</h3>
+        <div class="form-group">
+          <label for="sequenceText" data-i18n="sequenceText">Nội dung (cách bằng |):</label>
+          <input type="text" id="sequenceText" value="HAPPY|BIRTHDAY|MY|CUTEE|LITTLE|SWARALI|❤">
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3 data-i18n="gift">🎁 Hình Động</h3>
+        <div class="form-group">
+          <label for="giftImage" data-i18n="giftImage">Chọn GIF:</label>
+          <select id="giftImage">
+            <option value="" data-i18n="noGif">Không có</option>
+            <option value="./happy.gif">happy.gif</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3 data-i18n="book">📖 Trang Sách</h3>
+        <div class="form-group">
+          <label for="enableBook" data-i18n="enableBook">Hiển thị sách:</label>
+          <select id="enableBook">
+            <option value="true" data-i18n="on">Bật</option>
+            <option value="false" data-i18n="off">Tắt</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="enableHeart" data-i18n="enableHeart">Hiệu ứng trái tim:</label>
+          <select id="enableHeart">
+            <option value="true" data-i18n="on">Bật</option>
+            <option value="false" data-i18n="off">Tắt</option>
+          </select>
+        </div>
+      </div>
+
+      <button id="applySettings" class="apply-settings-btn" data-i18n="apply">🎉 Áp Dụng</button>
     </div>
   </div>
-
-  <audio id="birthdayAudio" loop preload="auto">
-    <source src="./music/happybirthday.mp3" type="audio/mpeg">
-  </audio>
-
-  <div class="copyright">
-    Made with ❤️ · <a href="https://github.com" target="_blank">GitHub</a>
-  </div>
 </div>
+
+<audio id="birthdayAudio" loop preload="auto">
+  <source src="./music/happybirthday.mp3" type="audio/mpeg">
+</audio>
+
+<div class="copyright">Made with ❤️ · <a href="https://github.com">GitHub</a></div>
+
+<script src="./lang.js"></script>
+<script src="./jscp/main.js"></script>
+<script src="./jscp/ui.js"></script>
+</body>
+</html>

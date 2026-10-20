@@ -1,51 +1,32 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Món Quà Đặc Biệt Cho Bạn 🎁</title>
-<meta name="description" content="Một món quà đầy yêu thương đang chờ bạn khám phá!">
-<meta name="theme-color" content="#000000">
-
-<link rel="icon" type="image/png" href="./image/logo.png">
-<link rel="apple-touch-icon" href="./image/logo.png">
-
-<meta property="og:title" content="Món Quà Đặc Biệt Cho Bạn 🎁">
-<meta property="og:description" content="Một món quà đầy yêu thương đang chờ bạn khám phá!">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./css/index.css">
-
-<script>
-// Load lang.js trước
-window.LANG = window.LANG || {};
-</script>
-</head>
-
-<body>
-
-<canvas id="matrix-rain"></canvas>
-
 <div class="overlay">
-  <div id="gift-image-container"></div>
 
-  <div class="content-display" id="contentDisplay">
-    <p id="contentText"></p>
+  <!-- ⏱️ COUNTDOWN -->
+  <div class="countdown-wrapper" id="countdownWrapper">
+    <div class="countdown-ring"></div>
+    <div class="countdown-border"></div>
+    <div class="countdown-number" id="countdownNumber">5</div>
+    <div class="countdown-label" data-i18n="gettingReady">Đang chuẩn bị...</div>
   </div>
 
+  <!-- ✍️ CONTENT TEXT -->
+  <div class="content-display" id="contentDisplay">
+    <div class="words-container" id="wordsContainer"></div>
+  </div>
+
+  <!-- BOOK -->
   <div class="book-container" id="bookContainer">
     <div class="book" id="book"></div>
   </div>
 
+  <!-- GIFT IMAGE -->
+  <div id="gift-image-container"></div>
+
+  <!-- BUTTONS -->
   <button class="music-control" id="musicControl" title="Play/Pause">▶</button>
   <button class="settings-button" id="settingsButton" title="Settings">⚙</button>
   <button id="langSwitchBtn" class="lang-switch">EN/VI</button>
 
-  <!-- ============ SETTINGS MODAL ============ -->
+  <!-- SETTINGS MODAL (giữ nguyên như cũ) -->
   <div id="settingsModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -164,12 +145,3 @@ window.LANG = window.LANG || {};
     Made with ❤️ · <a href="https://github.com" target="_blank">GitHub</a>
   </div>
 </div>
-
-<!-- Scripts -->
-<script src="./lang.js"></script>
-<script src="./jscp/detect-devtools.js"></script>
-<script src="./jscp/main.js"></script>
-<script src="./jscp/ui.js"></script>
-
-</body>
-</html>

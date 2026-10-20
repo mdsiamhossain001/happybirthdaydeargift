@@ -1,5 +1,5 @@
 // ============================================================
-// MAIN CONFIG & LOGIC
+// CONFIG
 // ============================================================
 window.CONFIG = {
   texts: ['HAPPY', 'BIRTHDAY', 'MY', 'CUTEE', 'LITTLE', 'SWARALI', '❤'],
@@ -80,36 +80,82 @@ window.addEventListener('resize', () => {
 });
 
 // ============================================================
-// TYPEWRITER
+// COUNTDOWN (CSS-driven, JS chỉ đổi số)
 // ============================================================
-let typeInterval = null;
+let countdownInterval = null;
 
-function showText(text) {
-  const contentDisplay = document.getElementById('contentDisplay');
-  const contentText = document.getElementById('contentText');
+function startCountdown() {
+  const wrapper = document.getElementById('countdownWrapper');
+  const numberEl = document.getElementById('countdownNumber');
 
-  if (typeInterval) clearInterval(typeInterval);
+  wrapper.classList.remove('hide');
+  wrapper.classList.add('show');
 
-  contentDisplay.classList.add('show');
-  contentText.textContent = '';
+  let count = CONFIG.countdown;
+  numberEl.textContent = count;
 
-  let i = 0;
-  typeInterval = setInterval(() => {
-    if (i < text.length) {
-      contentText.textContent += text.charAt(i);
-      i++;
+  // Restart CSS animation cho số
+  numberEl.style.animation = 'none';
+  void numberEl.offsetWidth;
+  numberEl.style.animation = '';
+
+  countdownInterval = setInterval(() => {
+    count--;
+
+    if (count > 0) {
+      // Reset animation mỗi lần đổi số
+      numberEl.textContent = count;
+      numberEl.style.animation = 'none';
+      void numberEl.offsetWidth;
+      numberEl.style.animation = '';
     } else {
-      clearInterval(typeInterval);
-      typeInterval = null;
+      clearInterval(countdownInterval);
+      countdownInterval = null;
+
+      // Fade out mượt
+      wrapper.classList.add('hide');
+      setTimeout(() => {
+        wrapper.classList.remove('show', 'hide');
+        setTimeout(() => {
+          startMatrix();
+          setTimeout(playSequence, 400);
+        }, 200);
+      }, 500);
     }
-  }, 100);
+  }, 1000);
 }
 
 // ============================================================
-// SEQUENCE
+// SEQUENCE — CSS-driven word reveal
 // ============================================================
 let isSequencePlaying = false;
 let currentTextIndex = 0;
+let sequenceTimeout = null;
+
+function showWordCSS(word) {
+  const container = document.getElementById('wordsContainer');
+  const display = document.getElementById('contentDisplay');
+
+  display.classList.add('show');
+  container.innerHTML = '';
+
+  const span = document.createElement('span');
+  span.className = 'word-reveal';
+  span.textContent = word;
+
+  // Reset animation mỗi lần
+  span.style.animation = 'none';
+  container.appendChild(span);
+  void span.offsetWidth;
+  span.style.animation = '';
+
+  // Fade out sau 1.6s
+  setTimeout(() => {
+    span.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+    span.style.opacity = '0';
+    span.style.transform = 'translateY(-30px) scale(0.9)';
+  }, 1600);
+}
 
 function playSequence() {
   if (isSequencePlaying) return;
@@ -122,14 +168,17 @@ function playSequence() {
       onSequenceComplete();
       return;
     }
-    showText(CONFIG.texts[currentTextIndex]);
+    showWordCSS(CONFIG.texts[currentTextIndex]);
     currentTextIndex++;
-    setTimeout(next, 2000);
+    sequenceTimeout = setTimeout(next, 2000);
   }
   next();
 }
 
 function onSequenceComplete() {
+  const display = document.getElementById('contentDisplay');
+  display.classList.remove('show');
+
   if (CONFIG.enableBook) {
     document.getElementById('bookContainer').classList.add('show');
     buildBook();
@@ -202,46 +251,27 @@ musicControl.addEventListener('click', () => {
 });
 
 // ============================================================
-// COUNTDOWN + START
+// RESTART
 // ============================================================
-function startCountdown() {
-  const contentDisplay = document.getElementById('contentDisplay');
-  const contentText = document.getElementById('contentText');
-  contentDisplay.classList.add('show');
-
-  let count = CONFIG.countdown;
-  contentText.textContent = count;
-
-  const interval = setInterval(() => {
-    count--;
-    if (count > 0) {
-      contentText.textContent = count;
-    } else {
-      clearInterval(interval);
-      contentDisplay.classList.remove('show');
-      setTimeout(() => {
-        startMatrix();
-        setTimeout(playSequence, 500);
-      }, 500);
-    }
-  }, 1000);
-}
-
 function restartExperience() {
   stopMatrix();
-  if (typeInterval) clearInterval(typeInterval);
+  if (countdownInterval) clearInterval(countdownInterval);
+  if (sequenceTimeout) clearTimeout(sequenceTimeout);
   isSequencePlaying = false;
   currentTextIndex = 0;
 
+  document.getElementById('countdownWrapper').classList.remove('show', 'hide');
   document.getElementById('contentDisplay').classList.remove('show');
+  document.getElementById('wordsContainer').innerHTML = '';
   document.getElementById('bookContainer').classList.remove('show');
+
   const book = document.getElementById('book');
   book.classList.remove('show');
   book.innerHTML = '';
   book.dataset.built = '';
   document.getElementById('gift-image-container').innerHTML = '';
 
-  startCountdown();
+  setTimeout(startCountdown, 100);
 }
 
 // Expose globals
@@ -252,9 +282,9 @@ window.startCountdown = startCountdown;
 window.playSequence = playSequence;
 window.buildBook = buildBook;
 window.createHeart = createHeart;
-window.showText = showText;
+window.showWordCSS = showWordCSS;
 
-// Start on load
+// Start
 window.addEventListener('load', () => {
   startCountdown();
   audio.play().then(() => {

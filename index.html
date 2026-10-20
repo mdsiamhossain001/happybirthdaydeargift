@@ -1,121 +1,175 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#100b22">
-  <meta name="description" content="A magical birthday gift made with love.">
-  <title>Happy Birthday, Dear!</title>
-  <link rel="stylesheet" href="css/index.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Món Quà Đặc Biệt Cho Bạn 🎁</title>
+<meta name="description" content="Một món quà đầy yêu thương đang chờ bạn khám phá!">
+<meta name="theme-color" content="#000000">
+
+<link rel="icon" type="image/png" href="./image/logo.png">
+<link rel="apple-touch-icon" href="./image/logo.png">
+
+<meta property="og:title" content="Món Quà Đặc Biệt Cho Bạn 🎁">
+<meta property="og:description" content="Một món quà đầy yêu thương đang chờ bạn khám phá!">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/index.css">
+
+<script>
+// Load lang.js trước
+window.LANG = window.LANG || {};
+</script>
 </head>
+
 <body>
-  <div class="ambient-glow glow-one"></div>
-  <div class="ambient-glow glow-two"></div>
-  <canvas id="starsCanvas" aria-hidden="true"></canvas>
-  <canvas id="matrixCanvas" aria-hidden="true"></canvas>
-  <canvas id="fireworksCanvas" aria-hidden="true"></canvas>
-  <div id="heartsLayer" aria-hidden="true"></div>
 
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="Birthday home"><span class="brand-mark">✦</span><span data-i18n="brand">A Little Magic</span></a>
-    <div class="top-actions">
-      <button class="icon-btn" id="languageBtn" title="Change language" aria-label="Change language">EN</button>
-      <button class="icon-btn" id="musicBtn" title="Play or pause music" aria-label="Play or pause music">♫</button>
-      <button class="icon-btn" id="settingsBtn" title="Settings" aria-label="Settings">⚙</button>
-    </div>
-  </header>
+<canvas id="matrix-rain"></canvas>
 
-  <main class="app-shell">
-    <section class="intro" id="intro">
-      <div class="eyebrow"><span class="sparkle">✧</span> <span data-i18n="eyebrow">A special surprise, made just for you</span> <span class="sparkle">✧</span></div>
-      <h1><span data-i18n="happy">Happy Birthday</span><br><em id="heroName">Dear You</em><span class="title-dot">.</span></h1>
-      <p class="intro-copy" data-i18n="intro">Some people make the world brighter just by being in it. Today, this little universe is all yours.</p>
-      <div class="hero-actions">
-        <button class="primary-btn" id="openGiftBtn"><span>✧</span> <span data-i18n="openGift">Open your gift</span> <span class="arrow">↗</span></button>
-        <button class="quiet-btn" id="surpriseBtn" data-i18n="surprise">Surprise me ✨</button>
-      </div>
-      <div class="hint"><span class="hint-line"></span><span data-i18n="hint">A tiny story is waiting inside</span><span class="hint-line"></span></div>
-    </section>
+<div class="overlay">
+  <div id="gift-image-container"></div>
 
-    <section class="gift-stage" id="giftStage" aria-label="Birthday gift book">
-      <div class="stage-orbit orbit-a"></div><div class="stage-orbit orbit-b"></div>
-      <div class="book-wrap" id="bookWrap">
-        <div class="book-shadow"></div>
-        <article class="book" id="book">
-          <div class="book-back"></div>
-          <div class="book-page page-right" id="pageRight">
-            <div class="page-inner">
-              <div class="page-topline"><span>✦</span><span id="pageNumber">01 / 04</span></div>
-              <div class="page-content" id="pageContent">
-                <div class="page-icon">🎂</div>
-                <p class="page-kicker" data-i18n="pageKicker">TODAY IS YOUR DAY</p>
-                <h2 id="pageTitle">A wish for you</h2>
-                <p id="pageText">May your days be full of little joys, unexpected magic, and people who love you exactly as you are.</p>
-              </div>
-              <div class="page-bottom"><span>Made with love</span><span>♥</span></div>
-            </div>
-          </div>
-          <div class="book-cover" id="bookCover">
-            <div class="cover-border">
-              <div class="cover-stars">✦　·　✧　·　✦</div>
-              <div class="cover-art"><span class="cover-ring"></span><span class="cover-heart">♥</span><span class="cover-flower">✿</span></div>
-              <p class="cover-small" data-i18n="coverSmall">A LITTLE BOOK OF</p>
-              <h2 data-i18n="coverTitle">Birthday<br>Wishes</h2>
-              <div class="cover-divider"><span>✦</span></div>
-              <p class="cover-for" data-i18n="coverFor">especially for <b id="coverName">you</b></p>
-              <div class="cover-bottom">✧　✦　✧</div>
-            </div>
-          </div>
-        </article>
-      </div>
-      <div class="book-controls">
-        <button class="round-control" id="prevPageBtn" aria-label="Previous page" disabled>←</button>
-        <span class="page-dots" id="pageDots"><i class="active"></i><i></i><i></i><i></i></span>
-        <button class="round-control" id="nextPageBtn" aria-label="Next page">→</button>
-      </div>
-      <p class="book-help" id="bookHelp" data-i18n="bookHelp">Tap the book or use the arrows to turn the pages</p>
-    </section>
-
-    <section class="wish-card">
-      <div class="wish-icon">✧</div>
-      <div class="wish-copy"><span data-i18n="wishLabel">A wish from the heart</span><p id="bottomWish">May this new chapter bring you more reasons to smile.</p></div>
-      <button class="share-btn" id="shareBtn" title="Share this birthday gift" aria-label="Share">↗</button>
-    </section>
-
-    <section class="countdown-card">
-      <div><span class="mini-label" data-i18n="countdownLabel">COUNTING THE LITTLE MOMENTS</span><h3 data-i18n="countdownTitle">Your special day</h3></div>
-      <div class="countdown" aria-label="Countdown"><div><b id="days">00</b><span data-i18n="days">days</span></div><div><b id="hours">00</b><span data-i18n="hours">hrs</span></div><div><b id="minutes">00</b><span data-i18n="minutes">min</span></div><div><b id="seconds">00</b><span data-i18n="seconds">sec</span></div></div>
-    </section>
-  </main>
-
-  <footer class="footer"><span>✦</span> <span data-i18n="footer">A little magic, made with love</span> <span>✦</span></footer>
-
-  <div class="modal-backdrop" id="settingsModal" hidden>
-    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-      <div class="modal-heading"><div><span class="mini-label" data-i18n="personalize">MAKE IT YOURS</span><h2 id="settingsTitle" data-i18n="settingsTitle">Gift settings</h2></div><button class="close-btn" data-close="settingsModal" aria-label="Close">×</button></div>
-      <form id="settingsForm">
-        <label><span data-i18n="recipientName">Birthday person's name</span><input id="nameInput" maxlength="40" placeholder="e.g. Samira"></label>
-        <label><span data-i18n="birthdayDate">Birthday date</span><input id="dateInput" type="date"></label>
-        <label><span data-i18n="customWish">Your personal message</span><textarea id="wishInput" rows="3" maxlength="300" placeholder="Write a little birthday wish..."></textarea></label>
-        <label><span data-i18n="gifUrl">GIF or image URL (optional)</span><input id="gifInput" type="url" placeholder="https://example.com/image.gif"></label>
-        <div class="field-label" data-i18n="themeColor">Choose your theme</div>
-        <div class="theme-options">
-          <button type="button" class="theme-swatch selected" data-theme="violet" aria-label="Violet theme"><span></span></button>
-          <button type="button" class="theme-swatch" data-theme="rose" aria-label="Rose theme"><span></span></button>
-          <button type="button" class="theme-swatch" data-theme="ocean" aria-label="Ocean theme"><span></span></button>
-          <button type="button" class="theme-swatch" data-theme="gold" aria-label="Gold theme"><span></span></button>
-        </div>
-        <label><span data-i18n="musicFile">Choose background music</span><input id="musicFileInput" type="file" accept="audio/*"></label>
-        <div class="modal-actions"><button type="button" class="secondary-btn" id="resetSettingsBtn" data-i18n="reset">Reset</button><button type="submit" class="primary-btn" data-i18n="saveSettings">Save changes</button></div>
-      </form>
-    </section>
+  <div class="content-display" id="contentDisplay">
+    <p id="contentText"></p>
   </div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <audio id="backgroundMusic" loop preload="none"></audio>
-  <script src="js/lang.js"></script>
-  <script src="js/effects.js"></script>
-  <script src="js/settings.js"></script>
-  <script src="js/main.js"></script>
+  <div class="book-container" id="bookContainer">
+    <div class="book" id="book"></div>
+  </div>
+
+  <button class="music-control" id="musicControl" title="Play/Pause">▶</button>
+  <button class="settings-button" id="settingsButton" title="Settings">⚙</button>
+  <button id="langSwitchBtn" class="lang-switch">EN/VI</button>
+
+  <!-- ============ SETTINGS MODAL ============ -->
+  <div id="settingsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 data-i18n="settings">⚙️ Cài Đặt</h2>
+        <span class="close" id="closeSettings">&times;</span>
+      </div>
+      <div class="modal-body">
+
+        <div class="settings-section">
+          <h3 data-i18n="music">🎵 Âm Thanh</h3>
+          <div class="form-group">
+            <label for="musicFile" data-i18n="musicFile">Chọn nhạc (MP3):</label>
+            <input type="file" id="musicFile" accept="audio/*">
+            <small style="color:#888;font-size:12px;" data-i18n="musicHint">Hoặc để trống dùng nhạc mặc định</small>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3 data-i18n="countdown">⏰ Đếm Ngược</h3>
+          <div class="form-group">
+            <label for="countdownTime" data-i18n="countdownTime">Thời gian:</label>
+            <select id="countdownTime">
+              <option value="3" data-i18n="sec3">3 giây</option>
+              <option value="5" selected data-i18n="sec5">5 giây</option>
+              <option value="10" data-i18n="sec10">10 giây</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3 data-i18n="matrix">🌧️ Mưa Chữ</h3>
+          <div class="form-group">
+            <label for="matrixText" data-i18n="matrixText">Chữ mưa:</label>
+            <input type="text" id="matrixText" value="HAPPYBIRTHDAY">
+          </div>
+          <div class="form-group">
+            <label data-i18n="colorTheme">Màu:</label>
+            <div class="color-theme-buttons">
+              <button type="button" class="color-theme-btn active" data-theme="pink">
+                <div class="color-preview pink-preview"></div>
+                <span data-i18n="pinkTheme">Hồng</span>
+              </button>
+              <button type="button" class="color-theme-btn" data-theme="blue">
+                <div class="color-preview blue-preview"></div>
+                <span data-i18n="blueTheme">Xanh</span>
+              </button>
+              <button type="button" class="color-theme-btn" data-theme="purple">
+                <div class="color-preview purple-preview"></div>
+                <span data-i18n="purpleTheme">Tím</span>
+              </button>
+              <button type="button" class="color-theme-btn" data-theme="custom">
+                <div class="color-preview custom-preview"></div>
+                <span data-i18n="customTheme">Tùy chỉnh</span>
+              </button>
+            </div>
+          </div>
+          <div class="form-row" id="customColorSection" style="display:none;">
+            <div class="form-group">
+              <label data-i18n="matrixColor1">Màu 1:</label>
+              <input type="color" id="matrixColor1" value="#ff69b4">
+            </div>
+            <div class="form-group">
+              <label data-i18n="matrixColor2">Màu 2:</label>
+              <input type="color" id="matrixColor2" value="#ff1493">
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3 data-i18n="sequence">✨ Chữ Chính</h3>
+          <div class="form-group">
+            <label for="sequenceText" data-i18n="sequenceText">Nội dung (cách bằng |):</label>
+            <input type="text" id="sequenceText" value="HAPPY|BIRTHDAY|MY|CUTEE|LITTLE|SWARALI|❤">
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3 data-i18n="gift">🎁 Hình Động</h3>
+          <div class="form-group">
+            <label for="giftImage" data-i18n="giftImage">Chọn GIF:</label>
+            <select id="giftImage">
+              <option value="" data-i18n="noGif">Không có</option>
+              <option value="./happy.gif">happy.gif</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3 data-i18n="book">📖 Trang Sách</h3>
+          <div class="form-group">
+            <label for="enableBook" data-i18n="enableBook">Hiển thị sách:</label>
+            <select id="enableBook">
+              <option value="true" data-i18n="on">Bật</option>
+              <option value="false" data-i18n="off">Tắt</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="enableHeart" data-i18n="enableHeart">Hiệu ứng trái tim:</label>
+            <select id="enableHeart">
+              <option value="true" data-i18n="on">Bật</option>
+              <option value="false" data-i18n="off">Tắt</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="applySettings" class="apply-settings-btn" data-i18n="apply">🎉 Áp Dụng</button>
+      </div>
+    </div>
+  </div>
+
+  <audio id="birthdayAudio" loop preload="auto">
+    <source src="./music/happybirthday.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="copyright">
+    Made with ❤️ · <a href="https://github.com" target="_blank">GitHub</a>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="./lang.js"></script>
+<script src="./jscp/detect-devtools.js"></script>
+<script src="./jscp/main.js"></script>
+<script src="./jscp/ui.js"></script>
+
 </body>
 </html>
